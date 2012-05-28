@@ -44,6 +44,13 @@
 #ifdef MALI_REBOOTNOTIFIER
 #include <linux/reboot.h>
 #endif
+<<<<<<< HEAD
+=======
+
+#if MALI_GPU_UTILIZATION
+#include "mali_kernel_utilization.h"
+#endif /* MALI_GPU_UTILIZATION */
+>>>>>>> upstream/master
 
 #ifdef CONFIG_GPU_CLOCK_CONTROL
 #include <../common/gpu_clock_control.h>
