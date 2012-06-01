@@ -194,7 +194,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
 #endif
 	.proxy_ndp		= 0,
 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
-	.disable_ipv6		= 0,
+	.disable_ipv6		= 1,
 	.accept_dad		= 1,
 };
 
@@ -228,7 +228,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
 #endif
 	.proxy_ndp		= 0,
 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
-	.disable_ipv6		= 0,
+	.disable_ipv6		= 1,
 	.accept_dad		= 1,
 };
 
