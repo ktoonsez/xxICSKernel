@@ -100,7 +100,7 @@ static int exynos_target(struct cpufreq_policy *policy,
 	if (exynos_cpufreq_disable)
 		goto out;
 
-	freqs.old = exynos_getspeed(policy->cpu);
+	freqs.old = policy->cur;
 
 	/*
 	 * cpufreq_frequency_table_target() cannot be used for freqs.old
@@ -264,7 +264,7 @@ int exynos_cpufreq_lock(unsigned int nId,
 	if (!exynos_info)
 		return -EPERM;
 
-	if (exynos_cpufreq_disable && (nId != DVFS_LOCK_ID_TMU)) {
+	if (exynos_cpufreq_disable) {
 		pr_info("CPUFreq is already fixed\n");
 		return -EPERM;
 	}
@@ -598,12 +598,12 @@ static int exynos_cpufreq_notifier_event(struct notifier_block *this,
 #if defined(CONFIG_CPU_EXYNOS4210)
 		exynos_cpufreq_upper_limit_free(DVFS_LOCK_ID_PM);
 #endif
+		exynos_cpufreq_disable = false;
 		/* If current governor is userspace or performance or powersave,
 		 * restore the saved cpufreq after waekup.
 		 */
 		if (exynos_cpufreq_lock_disable)
 			exynos_restore_gov_freq(policy);
-		exynos_cpufreq_disable = false;
 
 		return NOTIFY_OK;
 	}
@@ -612,7 +612,6 @@ static int exynos_cpufreq_notifier_event(struct notifier_block *this,
 
 static struct notifier_block exynos_cpufreq_notifier = {
 	.notifier_call = exynos_cpufreq_notifier_event,
-	.priority = INT_MIN, /* done last - originally by arighi */
 };
 
 static int exynos_cpufreq_policy_notifier_call(struct notifier_block *this,
