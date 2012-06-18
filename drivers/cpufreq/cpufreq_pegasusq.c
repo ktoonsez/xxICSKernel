@@ -160,7 +160,7 @@ static unsigned int get_nr_run_avg(void)
 #define DEF_FREQ_STEP				(100)
 #define DEF_START_DELAY				(0)
 
-#define UP_THRESHOLD_AT_MIN_FREQ		(40)
+#define UP_THRESHOLD_AT_MIN_FREQ		(95)
 #define FREQ_FOR_RESPONSIVENESS			(100000)
 
 #define HOTPLUG_DOWN_INDEX			(0)
