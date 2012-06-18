@@ -4,7 +4,7 @@ export INITRAMFS_SOURCE=`readlink -f $KERNELDIR/../initramfs3`
 export PARENT_DIR=`readlink -f ..`
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
-export CROSS_COMPILE=$PARENT_DIR/linaro4.7/bin/arm-linux-gnueabihf-
+export CROSS_COMPILE=$PARENT_DIR/linaro4.7/bin/arm-eabi-
 
 #Copy the initramfs
 echo "Remove old zImage"
