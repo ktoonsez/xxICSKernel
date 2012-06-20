@@ -63,6 +63,12 @@ DHDCFLAGS += -DUSE_INITIAL_2G_SCAN
 
 DHDCFLAGS +=-DINITIAL_2G_SCAN_BY_ESCAN
 
+#For INITIAL 2G scan features
+#select only one from USE_INIITAL_2G_SCAN and INITIAL_2G_SCAN_ORG
+
+#DHDCFLAGS += -DUSE_INITIAL_2G_SCAN
+DHDCFLAGS += -DUSE_INITIAL_2G_SCAN_ORG
+
 # For Scan result patch
 DHDCFLAGS += -DESCAN_RESULT_PATCH
 
@@ -183,3 +189,4 @@ clean:
 install:
 	@$(MAKE) --no-print-directory -C $(KDIR) \
 		SUBDIRS=$(CURDIR) modules_install
+
