@@ -140,7 +140,7 @@ static int bcmsdh_sdmmc_probe(struct sdio_func *func,
 	}else {
 		ret = -ENODEV;
 	}
-	
+
 	return ret;
 }
 
@@ -186,6 +186,8 @@ MODULE_DEVICE_TABLE(sdio, bcmsdh_sdmmc_ids);
 static int bcmsdh_sdmmc_suspend(struct device *pdev)
 {
 	struct sdio_func *func = dev_to_sdio_func(pdev);
+	mmc_pm_flag_t sdio_flags;
+	int ret;
 
 	if (func->num != 2)
 		return 0;
@@ -194,10 +196,23 @@ static int bcmsdh_sdmmc_suspend(struct device *pdev)
 
 	if (dhd_os_check_wakelock(bcmsdh_get_drvdata()))
 		return -EBUSY;
-#if !defined(CUSTOMER_HW_SAMSUNG)
+
+	sdio_flags = sdio_get_host_pm_caps(func);
+
+	if (!(sdio_flags & MMC_PM_KEEP_POWER)) {
+		sd_err(("%s: can't keep power while host is suspended\n", __FUNCTION__));
+		return  -EINVAL;
+	}
+
+	/* keep power while host suspended */
+	ret = sdio_set_host_pm_flags(func, MMC_PM_KEEP_POWER);
+	if (ret) {
+		sd_err(("%s: error while trying to keep power\n", __FUNCTION__));
+		return ret;
+	}
+
 #if defined(OOB_INTR_ONLY)
 	bcmsdh_oob_intr_set(0);
-#endif	/* defined(OOB_INTR_ONLY) */
 #endif	/* defined(OOB_INTR_ONLY) */
 	dhd_mmc_suspend = TRUE;
 	smp_mb();
@@ -213,11 +228,9 @@ static int bcmsdh_sdmmc_resume(struct device *pdev)
 	if (func->num == 2)
 		sd_err(("%s Enter\n", __FUNCTION__));
 	dhd_mmc_suspend = FALSE;
-#if !defined(CUSTOMER_HW_SAMSUNG)
 #if defined(OOB_INTR_ONLY)
 	if ((func->num == 2) && dhd_os_check_if_up(bcmsdh_get_drvdata()))
 		bcmsdh_oob_intr_set(1);
-#endif /* (OOB_INTR_ONLY) */
 #endif /* (OOB_INTR_ONLY) */
 
 	smp_mb();
@@ -319,7 +332,7 @@ sdioh_interrupt_set(sdioh_info_t *sd, bool enable)
 
 	if(!sd)
 		return BCME_BADARG;
-		
+
 	sd_trace(("%s: %s\n", __FUNCTION__, enable ? "Enabling" : "Disabling"));
 
 	sdos = (struct sdos_info *)sd->sdos_info;
