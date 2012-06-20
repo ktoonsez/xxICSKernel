@@ -605,18 +605,22 @@ static void dhd_set_packet_filter(int value, dhd_pub_t *dhd)
 }
 
 #if defined(CONFIG_HAS_EARLYSUSPEND)
+static int wifi_pm = 0;
+module_param(wifi_pm, int, 0755);
+
 static int dhd_set_suspend(int value, dhd_pub_t *dhd)
 {
-#ifndef CUSTOMER_HW_SAMSUNG
-	int power_mode = PM_MAX;
+	int power_mode = PM_MAX; 
 	/* wl_pkt_filter_enable_t	enable_parm; */
-	char iovbuf[32];
-	int bcn_li_dtim = 3;
-	uint roamvar = 1;
-#endif
+	//char iovbuf[32];
+	//int bcn_li_dtim = 3;
+	//uint roamvar = 1;
 
 	DHD_ERROR(("%s: enter, value = %d in_suspend=%d\n",
 		__FUNCTION__, value, dhd->in_suspend));
+
+	if ( wifi_pm == 1 )
+		power_mode = PM_FAST;
 
 	if (dhd && dhd->up) {
 		if (value && dhd->in_suspend) {
