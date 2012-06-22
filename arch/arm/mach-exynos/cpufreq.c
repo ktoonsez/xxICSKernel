@@ -264,7 +264,7 @@ int exynos_cpufreq_lock(unsigned int nId,
 	if (!exynos_info)
 		return -EPERM;
 
-	if (exynos_cpufreq_disable) {
+	if (exynos_cpufreq_disable && (nId != DVFS_LOCK_ID_TMU)) {
 		pr_info("CPUFreq is already fixed\n");
 		return -EPERM;
 	}
