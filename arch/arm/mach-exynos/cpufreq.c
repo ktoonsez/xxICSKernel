@@ -133,8 +133,8 @@ static int exynos_target(struct cpufreq_policy *policy,
 #if defined(CONFIG_CPU_EXYNOS4210)
 	/* Do NOT step up max arm clock directly to reduce power consumption */
 	exynos_cpufreq_get_level(policy->max, &max_index);
-	if (index == max_index && old_index > max_index + 5)
-		index = max_index + 5;
+	if (index == max_index && old_index > 8)
+		index = 8;
 #endif
 
 	freqs.new = freq_table[index].frequency;
