@@ -1,6 +1,5 @@
 #!/bin/sh
 export KERNELDIR=`readlink -f .`
-export INITRAMFS_SOURCE=`readlink -f $KERNELDIR/../initramfs3`
 export PARENT_DIR=`readlink -f ..`
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
@@ -14,7 +13,7 @@ mkdir -p kernel/usr/initramfs
 echo "Remove old initramfs dir"
 rm -rf kernel/usr/initramfs/*
 echo "Copy new initramfs dir"
-cp -R $PARENT_DIR/initramfs/* kernel/usr/initramfs
+cp -R $PARENT_DIR/initramfsJB/* kernel/usr/initramfs
 #echo "Remove .o files"
 #rm -rf kernel/*.o
 echo "chmod initramfs dir"
@@ -26,15 +25,16 @@ export USE_SEC_FIPS_MODE=true
 make xxKernel_i777_defconfig
 make -j`grep 'processor' /proc/cpuinfo | wc -l`
 echo "Copying Modules"
-mkdir kernel/usr/initramfs/lib
-mkdir kernel/usr/initramfs/lib/modules
-cp -a $(find . -name *.ko -print |grep -v initramfs) kernel/usr/initramfs/lib/modules/
+mkdir -p Package/system/lib/modules
+# mkdir kernel/usr/initramfs/lib
+# mkdir kernel/usr/initramfs/lib/modules
+cp -a $(find . -name *.ko -print |grep -v initramfs) Package/system/lib/modules/
 echo "Modules Copied"
 sleep 5
 touch kernel/usr/initramfs
 echo "Rebuilding kernel with new initramfs"
 make -j`grep 'processor' /proc/cpuinfo | wc -l`
-cp arch/arm/boot/zImage zImage
+cp arch/arm/boot/zImage Package/zImage
 # adb shell reboot download
 # sleep 5
 # heimdall flash --kernel arch/arm/boot/zImage
